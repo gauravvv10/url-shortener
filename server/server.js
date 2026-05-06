@@ -5,7 +5,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const urlRoutes = require("./routes/urlRoutes");
 
-const app = express(); // ✅ FIXED
+const app = express();
 
 // middleware
 app.use(cors());
