@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import UrlForm from "../components/UrlForm";
 import UrlStats from "../components/UrlStats";
 import "./Dashboard.css";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("shorten");
+
+  // refs for scrolling
+  const appRef = useRef(null);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+
+    // smooth scroll to tool section
+    setTimeout(() => {
+      appRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100); // small delay so tab switches first
+  };
 
   return (
     <div className="page">
@@ -39,14 +54,14 @@ export default function Dashboard() {
         <div className="hero-actions">
           <button
             className="btn-primary"
-            onClick={() => setActiveTab("shorten")}
+            onClick={() => handleTabChange("shorten")}
           >
             Start Shortening
           </button>
 
           <button
             className="btn-secondary"
-            onClick={() => setActiveTab("stats")}
+            onClick={() => handleTabChange("stats")}
           >
             View Stats
           </button>
@@ -84,7 +99,7 @@ export default function Dashboard() {
       </section>
 
       {/* ───────── APP SECTION ───────── */}
-      <section className="app-section">
+      <section className="app-section" ref={appRef}>
 
         <div className="section-label">
           <div className="section-label-line" />
@@ -93,7 +108,7 @@ export default function Dashboard() {
 
         <div className="app-grid">
 
-          {/* LEFT: MAIN TOOL */}
+          {/* LEFT: TOOL */}
           <div>
             {activeTab === "shorten" ? (
               <UrlForm />
@@ -102,7 +117,7 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* RIGHT: QUICK INFO PANEL */}
+          {/* RIGHT: INFO */}
           <div className="card">
             <h3 style={{ marginBottom: "10px" }}>Quick Guide</h3>
 
@@ -117,7 +132,7 @@ export default function Dashboard() {
               <button
                 className="btn-secondary"
                 style={{ width: "100%" }}
-                onClick={() => setActiveTab("shorten")}
+                onClick={() => handleTabChange("shorten")}
               >
                 Create New Link
               </button>
