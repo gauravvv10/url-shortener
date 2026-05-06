@@ -20,7 +20,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 /* 🔥 IMPORTANT: handle preflight explicitly */
-app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 
 /* ───────── MIDDLEWARE ───────── */
 app.use(express.json());
