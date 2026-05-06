@@ -8,7 +8,12 @@ const urlRoutes = require("./routes/urlRoutes");
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://your-frontend.vercel.app"
+  ]
+}));
 app.use(express.json());
 
 // connect DB
