@@ -7,22 +7,41 @@ const urlRoutes = require("./routes/urlRoutes");
 
 const app = express();
 
-// middleware
-app.use(cors({
-  origin: "https://gauravadhikari-linklite.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
-app.use(express.json());
+// CORS CONFIG (PRODUCTION SAFE)
+app.use(
+  cors({
+    origin: [
+      "https://gauravadhikari-linklite.vercel.app",
+      "http://localhost:5173" // local development
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
-// connect DB
+// MIDDLEWARE
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// HEALTH CHECK (for Render) 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", message: "Server is running" });
+});
+
+// DATABASE CONNECTION 
 connectDB();
 
-// routes
+// ROUTES 
 app.use("/", urlRoutes);
 
+// HANDLE UNKNOWN ROUTES 
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// START SERVER 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
