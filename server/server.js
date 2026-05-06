@@ -7,39 +7,42 @@ const urlRoutes = require("./routes/urlRoutes");
 
 const app = express();
 
-// CORS CONFIG (PRODUCTION SAFE)
-app.use(
-  cors({
-    origin: [
-      "https://gauravadhikari-linklite.vercel.app",
-      "http://localhost:5173" // local development
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+/* ───────── CORS ───────── */
+const corsOptions = {
+  origin: [
+    "https://gauravadhikari-linklite.vercel.app",
+    "http://localhost:5173",
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-// MIDDLEWARE
+app.use(cors(corsOptions));
+
+/* 🔥 IMPORTANT: handle preflight explicitly */
+app.options("*", cors(corsOptions));
+
+/* ───────── MIDDLEWARE ───────── */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// HEALTH CHECK (for Render) 
+/* ───────── HEALTH CHECK ───────── */
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK", message: "Server is running" });
+  res.status(200).json({ status: "OK" });
 });
 
-// DATABASE CONNECTION 
+/* ───────── DB ───────── */
 connectDB();
 
-// ROUTES 
+/* ───────── ROUTES ───────── */
 app.use("/", urlRoutes);
 
-// HANDLE UNKNOWN ROUTES 
+/* ───────── 404 ───────── */
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// START SERVER 
+/* ───────── START ───────── */
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
